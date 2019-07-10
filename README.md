@@ -1,0 +1,1 @@
+# zabbix-1c-service-template
