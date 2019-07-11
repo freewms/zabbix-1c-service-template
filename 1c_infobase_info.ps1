@@ -28,7 +28,6 @@ function get_max_value($object)
 	$max_value = 0;
 	foreach($pos in $object)
 	{
-		echo $pos >> C:\zabbix\err.txt
 		$str = $pos.Matches[0]
 		$str = $str.ToString()
 		$str_int = [int]$str.Split(":")[1]
