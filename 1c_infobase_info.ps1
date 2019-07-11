@@ -113,10 +113,10 @@ function get_sessions_info()
 	}
 	
 	$max_duration_dbms = 0;
-	foreach($duration_dbms in $sessions_duration)
+	foreach($duration_dbms in $sessions_duration_dbms)
 	{	
 		[int]$current_duration_dbms = get_value_from_text_line $duration_dbms
-		if ($max_duration_dbms -lt $current_duration_dbms) {$duration_dbms = $current_duration_dbms}
+		if ($max_duration_dbms -lt $current_duration_dbms) {$max_duration_dbms = $current_duration_dbms}
 	}
 						
 	$data_array +=  [int]$sessions_app_id_heap.Count
@@ -138,10 +138,3 @@ function get_sessions_info()
 
 $data_array = get_sessions_info
 return_json $data_array
-
-
-
-
-
-
-
