@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>4.2</version>
-    <date>2019-07-10T19:45:05Z</date>
+    <date>2019-07-11T13:37:29Z</date>
     <groups>
         <group>
             <name>Templates/Applications</name>
@@ -432,7 +432,7 @@
                             <preprocessing>
                                 <step>
                                     <type>12</type>
-                                    <params>$.MAX_DURATION_DBMS</params>
+                                    <params>$.MAX_DURATION</params>
                                     <error_handler>0</error_handler>
                                     <error_handler_params/>
                                 </step>
@@ -1085,7 +1085,7 @@
                     </item_prototypes>
                     <trigger_prototypes>
                         <trigger_prototype>
-                            <expression>{Template App 1C Service:1c.infobase.lockbydbms[{#CLUSTERID},{#INFOBASEID}].last()}&gt;5000</expression>
+                            <expression>{Template App 1C Service:1c.infobase.lockbydbms[{#CLUSTERID},{#INFOBASEID}].last(3)}&gt;0</expression>
                             <recovery_mode>0</recovery_mode>
                             <recovery_expression/>
                             <name>1C lock by DBMS into {#INFOBASENAME} on {#CLUSTERNAME}</name>
@@ -1101,7 +1101,7 @@
                             <tags/>
                         </trigger_prototype>
                         <trigger_prototype>
-                            <expression>{Template App 1C Service:1c.infobase.lockbyls[{#CLUSTERID},{#INFOBASEID}].last()}&gt;0</expression>
+                            <expression>{Template App 1C Service:1c.infobase.lockbyls[{#CLUSTERID},{#INFOBASEID}].last(3)}&gt;0</expression>
                             <recovery_mode>0</recovery_mode>
                             <recovery_expression/>
                             <name>1C locks by LS into {#INFOBASENAME} on {#CLUSTERNAME}</name>
