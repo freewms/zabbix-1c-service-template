@@ -23,19 +23,19 @@ function convertto-encoding ([string]$from, [string]$to)
     }
 }
 
-# Extract value from text line specified to RAC stdout
-function get_value_from_text_line([string]$key_and_value) {
-	
-	$value = ""
-	$pos = $key_and_value.IndexOf(":")
-	
-	if ($pos -gt 0) 
+function get_max_value($object)
+{
+	$max_value = 0;
+	foreach($pos in $object)
 	{
-		$value = $key_and_value.Substring($pos+2, $key_and_value.Length-$pos-2)
-		$value = $value.Trim("`"")
-	} 
-	return $value
-
+		echo $pos >> C:\zabbix\err.txt
+		$str = $pos.Matches[0]
+		$str = $str.ToString()
+		$str_int = [int]$str.Split(":")[1]
+		if ($max_value -lt $str_int) {$max_value = $str_int}
+	}
+	
+	return $max_value
 }
 
 function return_json($data_array=@(), $iserror=0)
@@ -90,9 +90,9 @@ function get_sessions_info()
 		return_json $data_array 1
 	}
 		
-	$sessions_app_id_heap =  $stdout_heap | Select-String -Pattern "app-id:*"	
-	$sessions_blocked_by_dbms =  $stdout_heap | Select-String -Pattern "blocked_by_dbms:*"
-	$sessions_blocked_by_ls =  $stdout_heap | Select-String -Pattern "blocked_by_ls:*"
+	$sessions_app_id_heap =  $stdout_heap | Select-String -Pattern "app-id*"	
+	$sessions_blocked_by_ls =  $stdout_heap | Select-String "blocked-by-ls[ ]*:[ ]*[1-9][0-9]*"
+	$sessions_blocked_by_dbms =  $stdout_heap | Select-String "blocked-by-dbms[ ]*:[ ]*[1-9][0-9]*" 
 		
 	$sessions_type_designer = $sessions_app_id_heap | Select-String -Pattern ": Designer"
 	$sessions_type_background_job = $sessions_app_id_heap | Select-String -Pattern ": BackgroundJob"
@@ -102,26 +102,17 @@ function get_sessions_info()
 	$sessions_type_web_service = $sessions_app_id_heap | Select-String -Pattern ": WSConnection"
 	$sessions_type_com_console = $sessions_app_id_heap | Select-String -Pattern ": COMConsole"
 	$sessions_type_unknown = $sessions_app_id_heap | Select-String -Pattern "1CV8*", ": BackgroundJob", ": Designer", ": WSConnection",": COMConnection",": COMConsole" -notMatch
-	$sessions_duration = $stdout_heap | Select-String -Pattern "duration-current:*"
-	$sessions_duration_dbms = $stdout_heap | Select-String -Pattern "duration-current-dbms:*"
+	$sessions_duration = $stdout_heap | Select-String "duration-current[ ]*:[ ]*[1-9][0-9]*"
+	$sessions_duration_dbms = $stdout_heap | Select-String "duration-current-dbms[ ]*:[ ]*[1-9][0-9]*"
 	
-	$max_duration = 0;
-	foreach($duration in $sessions_duration)
-	{
-		[int]$current_duration = get_value_from_text_line $duration
-		if ($max_duration -lt $current_duration) {$max_duration = $current_duration}
-	}
-	
-	$max_duration_dbms = 0;
-	foreach($duration_dbms in $sessions_duration_dbms)
-	{	
-		[int]$current_duration_dbms = get_value_from_text_line $duration_dbms
-		if ($max_duration_dbms -lt $current_duration_dbms) {$max_duration_dbms = $current_duration_dbms}
-	}
+	$max_duration = get_max_value $sessions_duration
+	$max_duration_dbms = get_max_value $sessions_duration_dbms
+	$lock_by_ls_count = $sessions_blocked_by_ls.Count
+	$lock_by_dbms_count = $sessions_blocked_by_dbms.Count
 						
 	$data_array +=  [int]$sessions_app_id_heap.Count
-	$data_array +=  [int]$sessions_blocked_by_dbms.Count
-	$data_array +=  [int]$sessions_blocked_by_ls.Count
+	$data_array +=  [int]$lock_by_dbms_count
+	$data_array +=  [int]$lock_by_ls_count
 	$data_array +=  [int]$sessions_type_designer.Count
 	$data_array +=  [int]$sessions_type_background_job.Count
 	$data_array +=  [int]$sessions_type_thin_client.Count
