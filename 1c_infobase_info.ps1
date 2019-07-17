@@ -75,7 +75,7 @@ function get_sessions_info()
 			
 	try
 	{
-		$stdout_heap = & $rac localhost:$ras_port session list --cluster=$cluster_id --infobase=$infobase_id 2>&1
+		$stdout_heap = & $rac localhost:$ras_port session list --cluster=$cluster_id --infobase=$infobase_id --cluster-user=$rac_usr --cluster-pwd=$rac_pwd 2>&1
 		
 		if (!$?)
 		{	
