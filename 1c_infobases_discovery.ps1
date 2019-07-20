@@ -110,7 +110,7 @@ function get_infobases_info([string]$cluster_id){
 		if ($rac_usr -eq "") {
 			$stdout_heap = & $rac localhost:$ras_port infobase summary list --cluster=$cluster_id 2>&1
 		} else {
-			$stdout_heap = & $rac localhost:$ras_port infobase summary list --cluster=$cluster_id --cluster-user=$usr --cluster-pwd=$pwd 2>&1
+			$stdout_heap = & $rac localhost:$ras_port infobase summary list --cluster=$cluster_id --cluster-user=$rac_usr --cluster-pwd=$rac_pwd 2>&1
 		}
 		
 		if (!$?)
