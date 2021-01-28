@@ -1194,7 +1194,7 @@
             <macros>
                 <macro>
                     <macro>{$RAC_PATH}</macro>
-                    <value>C:\Program Files\1cv8\8.3.7.2008\bin\rac.exe</value>
+                    <value>C:/Program Files/1cv8/8.3.7.2008/bin/rac.exe</value>
                 </macro>
                 <macro>
                     <macro>{$RAC_PWD}</macro>
